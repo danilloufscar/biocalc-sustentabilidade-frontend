@@ -1,6 +1,11 @@
 import { Input, Button, Card } from '@/components/GenericComponents';
+import { useNavigate } from 'react-router-dom';
 
-export const RegisterPage = ({ onNavigateToLogin }: { onNavigateToLogin: () => void }) => (
+export const RegisterPage = () => {
+
+  const navigate = useNavigate();
+
+  return (
   <div className="min-h-screen bg-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div className="sm:mx-auto sm:w-full sm:max-w-md">
       <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900">
@@ -19,17 +24,18 @@ export const RegisterPage = ({ onNavigateToLogin }: { onNavigateToLogin: () => v
           <Input label="Confirme a Senha" type="password" />
           
           <div className="pt-2">
-             <Button className="w-full" onClick={onNavigateToLogin}>
+             <Button className="w-full" onClick={() => navigate('/dashboard')}>
               Cadastrar
             </Button>
           </div>
         </form>
          <div className="mt-4 text-center">
-            <button onClick={onNavigateToLogin} className="text-sm font-medium text-emerald-600 hover:text-emerald-500">
+            <button onClick={() => navigate('/login')} className="text-sm font-medium text-emerald-600 hover:text-emerald-500">
               Já tenho uma conta
             </button>
          </div>
       </Card>
     </div>
   </div>
-);
+  )
+};

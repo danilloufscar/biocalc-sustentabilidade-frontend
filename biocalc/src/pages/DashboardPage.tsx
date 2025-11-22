@@ -1,13 +1,17 @@
 import { Plus, FileText, Leaf, BarChart3 } from 'lucide-react';
 import { Button, Card, Badge } from '@/components/GenericComponents';
 import { RECENT_PROJECTS } from '@/mock/mockedData';
-import { Page } from '@/Types/Types';
+import { useNavigate } from 'react-router-dom';
 
-export const DashboardPage = ({ navigate }: { navigate: (page: Page) => void }) => (
+export const DashboardPage = () => {
+
+    const navigate = useNavigate();
+
+    return (
     <div className="space-y-6">
         <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold text-slate-900">Visão Geral</h1>
-            <Button icon={Plus} onClick={() => navigate('calculator')}>Novo Cálculo</Button>
+            <Button icon={Plus} onClick={() => navigate('/calculator')}>Novo Cálculo</Button>
         </div>
 
         {/* KPI Cards */}
@@ -80,4 +84,5 @@ export const DashboardPage = ({ navigate }: { navigate: (page: Page) => void }) 
             </div>
         </Card>
     </div>
-);
+    )
+};

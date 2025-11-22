@@ -3,7 +3,7 @@ import { Settings, Sprout, Truck, CheckCircle, AlertCircle, FileText, Save, Arro
 import { Button, Input, Select, Card, Modal } from '@/components/GenericComponents';
 import { BIOMASS_OPTIONS } from '@/mock/mockedData';
 
-export const CalculatorPage = ({ onCancel }: { onCancel: () => void }) => {
+export const CalculatorPage = () => {
     const [step, setStep] = useState(1);
     const [showResultsModal, setShowResultsModal] = useState(false);
 
@@ -22,7 +22,7 @@ export const CalculatorPage = ({ onCancel }: { onCancel: () => void }) => {
         <div className="max-w-4xl mx-auto">
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-slate-900">Novo Cálculo BioCalc</h2>
-                <Button variant="outline" size="sm" onClick={onCancel}>Cancelar</Button>
+                <Button variant="outline" size="sm">Cancelar</Button>
             </div>
 
              <div className="flex items-center justify-between mb-8">
@@ -199,7 +199,7 @@ export const CalculatorPage = ({ onCancel }: { onCancel: () => void }) => {
                 onClose={() => setShowResultsModal(false)}
                 title="Projeto Salvo com Sucesso!"
                 footer={
-                    <Button onClick={() => { setShowResultsModal(false); onCancel(); }}>
+                    <Button onClick={() => { setShowResultsModal(false);}}>
                         Voltar ao Dashboard
                     </Button>
                 }

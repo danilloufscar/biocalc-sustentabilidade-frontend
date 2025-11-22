@@ -1,12 +1,14 @@
 import { Leaf } from 'lucide-react';
 import { Input, Button, Card } from '@/components/GenericComponents';
+import { useNavigate } from 'react-router-dom';
 
-interface LoginPageProps {
-  onLogin: () => void;
-  onNavigateToRegister: () => void;
-}
 
-export const LoginPage = ({ onLogin, onNavigateToRegister }: LoginPageProps) => (
+
+export const LoginPage = () => {
+  const navigate = useNavigate();
+
+
+  return (
   <div className="min-h-screen bg-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div className="sm:mx-auto sm:w-full sm:max-w-md">
       <div className="flex justify-center items-center gap-2">
@@ -25,7 +27,7 @@ export const LoginPage = ({ onLogin, onNavigateToRegister }: LoginPageProps) => 
 
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
       <Card className="py-8 px-4 shadow sm:rounded-lg sm:px-10">
-        <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); onLogin(); }}>
+        <form className="space-y-6">
           <Input 
             label="E-mail Corporativo" 
             type="email" 
@@ -51,7 +53,7 @@ export const LoginPage = ({ onLogin, onNavigateToRegister }: LoginPageProps) => 
             </div>
           </div>
 
-          <Button className="w-full" type="submit">
+          <Button className="w-full" type="submit" onClick={() =>   navigate('/dashboard')}>
             Entrar
           </Button>
         </form>
@@ -68,12 +70,13 @@ export const LoginPage = ({ onLogin, onNavigateToRegister }: LoginPageProps) => 
             </div>
           </div>
           <div className="mt-6 grid grid-cols-1">
-            <Button variant="outline" onClick={onNavigateToRegister}>
+            <Button variant="outline" onClick={() => navigate('/register-account')}>
               Criar conta empresarial
             </Button>
           </div>
         </div>
       </Card>
-    </div>
   </div>
+</div>
 );
+};
