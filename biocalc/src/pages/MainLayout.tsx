@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom'; // Importante!
-import { Leaf, LayoutDashboard, Calculator, LogOut, Menu, ChevronRight } from 'lucide-react';
-
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Leaf, LayoutDashboard, Calculator, LogOut, Menu, ChevronRight, User, FileText, Settings } from 'lucide-react';
 
 interface SidebarItemProps {
   icon: React.ComponentType<{ size?: number }>;
@@ -10,7 +9,6 @@ interface SidebarItemProps {
   onClick: () => void;
   collapsed: boolean;
 }
-
 
 const SidebarItem = ({ icon: Icon, label, active, onClick, collapsed }: SidebarItemProps) => (
   <button
@@ -24,26 +22,20 @@ const SidebarItem = ({ icon: Icon, label, active, onClick, collapsed }: SidebarI
     <Icon size={20} />
     {!collapsed && <span className="font-medium text-sm">{label}</span>}
   </button>
-); 
-
-
-
-
+);
 
 export const MainLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   
-  // HOOKS DO ROUTER
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Função auxiliar para verificar se a rota está ativa
   const isActive = (path: string) => location.pathname.includes(path);
 
-  // Mapeamento do título baseado na rota atual
   const getPageTitle = () => {
     if (location.pathname.includes('calculator')) return 'Cálculo de Eficiência';
     if (location.pathname.includes('projects')) return 'Meus Projetos';
+    if (location.pathname.includes('profile')) return 'Meu Perfil'; // Novo título
     return 'Dashboard';
   };
 
@@ -52,14 +44,20 @@ export const MainLayout = () => {
       {/* Sidebar */}
       <aside className={`bg-white border-r border-slate-200 fixed inset-y-0 left-0 z-20 transition-all duration-300 ease-in-out flex flex-col ${sidebarOpen ? 'w-64' : 'w-20'}`}>
         
-        {/* Logo Area (Mantido igual) */}
         <div className="h-16 flex items-center justify-center border-b border-slate-100 px-4">
-             {/* ... seu código do logo ... */}
-             <div className="bg-emerald-600 p-1.5 rounded-lg"><Leaf className="text-white h-5 w-5" /></div>
-             {sidebarOpen && <span className="text-xl font-bold text-slate-900 ml-2">BioCalc</span>}
+             <div className="flex items-center gap-2">
+                <div className="bg-emerald-600 p-1.5 rounded-lg">
+                    <Leaf className="text-white h-5 w-5" />
+                </div>
+                {sidebarOpen && (
+                    <>
+                        <span className="text-xl font-bold text-slate-900">BioCalc</span>
+                        <span className="ml-auto text-sm font-medium text-slate-500">v1.0</span>
+                    </>
+                )}
+            </div>
         </div>
 
-        {/* Menu Items com Navegação Real */}
         <div className="flex-1 py-6 space-y-1">
           <SidebarItem 
             icon={LayoutDashboard} 
@@ -75,9 +73,22 @@ export const MainLayout = () => {
             onClick={() => navigate('/calculator')}
             collapsed={!sidebarOpen}
           />
+          <SidebarItem 
+            icon={FileText} 
+            label="Meus Projetos" 
+            active={isActive('/projects')} 
+            onClick={() => navigate('/projects')}
+            collapsed={!sidebarOpen}
+          />
+          <SidebarItem 
+            icon={Settings} 
+            label="Configurações" 
+            active={isActive('/profile')} // Configurações também pode levar ao perfil
+            onClick={() => navigate('/profile')}
+            collapsed={!sidebarOpen}
+          />
         </div>
 
-        {/* Logout */}
         <div className="p-4 border-t border-slate-100">
              <button onClick={() => navigate('/login')} className={`flex items-center gap-2 text-slate-500 hover:text-red-600 transition-colors ${!sidebarOpen && 'justify-center'}`}>
                 <LogOut size={18} />
@@ -100,11 +111,25 @@ export const MainLayout = () => {
                 <span className="font-medium text-slate-900 capitalize">{getPageTitle()}</span>
              </nav>
           </div>
-          {/* User Info ... */}
+
+          <div className="flex items-center gap-4">
+             <div className="text-right hidden md:block">
+                <div className="text-sm font-medium text-slate-900">Eng. Ricardo</div>
+                <div className="text-xs text-slate-500">BioEnergia S.A.</div>
+             </div>
+             
+             {/* Avatar Clicável */}
+             <button 
+                onClick={() => navigate('/profile')}
+                className="h-9 w-9 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-700 border border-emerald-200 hover:ring-2 hover:ring-emerald-500 transition-all cursor-pointer focus:outline-none"
+                title="Meu Perfil"
+             >
+                <User size={18} />
+             </button>
+          </div>
         </header>
 
         <main className="flex-1 p-6 overflow-y-auto">
-            {/* O OUTLET É ONDE AS PÁGINAS FILHAS SERÃO RENDERIZADAS */}
             <Outlet />
         </main>
       </div>

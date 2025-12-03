@@ -28,6 +28,7 @@ interface InputProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   helpText?: string;
   icon?: React.ElementType;
+  readOnly?: boolean;
 }
 
 interface CardProps {
@@ -85,7 +86,7 @@ export const Button = ({
 };
 
 // --- INPUT ---
-export const Input = ({ label, type = "text", placeholder, value, onChange, helpText, icon: Icon }: InputProps) => (
+export const Input = ({ label, type = "text", placeholder, value, onChange, helpText, icon: Icon, readOnly }: InputProps) => (
   <div className="mb-4">
     {label && <label className="block text-sm font-medium text-slate-700 mb-1">{label}</label>}
     <div className="relative rounded-md shadow-sm">
@@ -96,6 +97,7 @@ export const Input = ({ label, type = "text", placeholder, value, onChange, help
       )}
       <input
         type={type}
+        readOnly={readOnly}
         className={`block w-full rounded-md border-slate-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm py-2 px-3 border ${Icon ? 'pl-10' : ''}`}
         placeholder={placeholder}
         value={value}
