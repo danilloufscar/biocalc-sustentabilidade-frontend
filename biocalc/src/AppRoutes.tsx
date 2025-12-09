@@ -1,28 +1,31 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
+
+// Páginas existentes
 import { LoginPage } from "./pages/LoginPage"
 import { MainLayout } from "./pages/MainLayout"
 import { DashboardPage } from "./pages/DashboardPage"
-import { CalculatorPage } from "./pages/CalculatorPage"
 import { RegisterPage } from "./pages/RegisterPage"
 import { UserProfilePage } from "./pages/UserProfilePage"
+import { CalculatorOrchestrator } from "./pages/calculator/CalculatorOrchestrator"
 
 const AppRoutes = () => {
   return (
-    <>
     <BrowserRouter basename="/biocalc">
-    <Routes>
-        <Route index path="" element={<Navigate to="login" />} />
-        <Route path="login" element={<LoginPage />} />
-        <Route path="" element={<MainLayout />}>
-        <Route path="dashboard" element={<DashboardPage />} />
-        <Route path="calculator" element={<CalculatorPage />} />
-        <Route path="projects" element={<div>Meus Projetos - Em construção</div>} />
-        <Route path="profile" element={<UserProfilePage/>} />
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register-account" element={<RegisterPage />} />
+
+        <Route element={<MainLayout />}>
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/calculator" element={<CalculatorOrchestrator />} />
+            <Route path="/projects" element={<div className="p-8">Meus Projetos - Em construção</div>} />
+            <Route path="/profile" element={<UserProfilePage/>} />
         </Route>
-        <Route path="register-account" element={<RegisterPage />} />
-    </Routes>
+
+      </Routes>
     </BrowserRouter>
-    </>
   )
 }
 
