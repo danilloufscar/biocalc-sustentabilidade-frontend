@@ -1,34 +1,32 @@
 import React from 'react';
-import { Leaf, Info } from 'lucide-react';
+import { Leaf } from 'lucide-react';
 import { Input, Select, Card } from '../../../components/GenericComponents';
-import { BiomassData, BiomassType } from '../../../Types';
+import { Step1BiomassProductionData, BiomassType, YesNo } from '../../../Types/Types';
 
-// Opções extraídas da aba 'Dados auxiliares'
 const BIOMASS_OPTIONS: BiomassType[] = [
     'Resíduo de Pinus',
     'Resíduo de Eucaliptus',
-    'Casca de Amendoim',
-    'Bagaço de Cana',
-    'Cavaco de Madeira',
-    'Outros'
+    'Carvão vegetal de eucalipto',
+    'Casca de Amendoin',
+    'Eucaliptus Virgem',
+    'Pinus Virgem'
 ];
 
-interface StepBiomassProps {
-    data: BiomassData;
-    onUpdate: (data: Partial<BiomassData>) => void;
+interface Step1BiomassProductionProps {
+    data: Step1BiomassProductionData;
+    onUpdate: (data: Partial<Step1BiomassProductionData>) => void;
 }
 
-export const StepBiomass: React.FC<StepBiomassProps> = ({ data, onUpdate }) => {
-
+export const Step1BiomassProduction: React.FC<Step1BiomassProductionProps> = ({ data, onUpdate }) => {
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
-            
+
             {/* Header Visual */}
             <div className="bg-emerald-50 border-l-4 border-emerald-500 p-4 mb-6">
                 <div className="flex">
                     <Leaf className="h-5 w-5 text-emerald-500 mr-3" />
                     <div>
-                        <h3 className="text-sm font-medium text-emerald-800">Produção de Biomassa</h3>
+                        <h3 className="text-sm font-medium text-emerald-800">Step 1: Produção de Biomassa</h3>
                         <p className="text-sm text-emerald-700 mt-1">
                             Defina a matéria-prima e os insumos básicos de entrada.
                         </p>
@@ -37,39 +35,38 @@ export const StepBiomass: React.FC<StepBiomassProps> = ({ data, onUpdate }) => {
             </div>
 
             <Card className="space-y-6">
-                
+
                 {/* 1. Tipo de Biomassa */}
                 <Select
                     label="Tipo de Biomassa"
                     options={BIOMASS_OPTIONS}
-                    value={data.type}
-                    onChange={(e) => onUpdate({ type: e.target.value as BiomassType })}
-                    helpText="Selecione a fonte principal de biomassa conforme Linha 33 da planilha."
+                    value={data.biomass_type}
+                    onChange={(e) => onUpdate({ biomass_type: e.target.value as BiomassType })}
+                    helpText="Selecione a fonte principal de biomassa."
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    
+
                     {/* 2. Possui informação sobre consumo? */}
                     <Select
                         label="Possui informação sobre o consumo de Biomassa?"
                         options={['Sim', 'Não']}
-                        value={data.biomassConsumptionKnown}
-                        onChange={(e) => onUpdate({ 
-                            biomassConsumptionKnown: e.target.value as 'Sim' | 'Não',
-                            // Limpa o valor se mudar para Não
-                            biomassConsumptionValue: e.target.value === 'Não' ? 0 : data.biomassConsumptionValue
+                        value={data.biomass_consumption_known || 'Não'}
+                        onChange={(e) => onUpdate({
+                            biomass_consumption_known: e.target.value as YesNo,
+                            biomass_consumption_value: e.target.value === 'Não' ? undefined : data.biomass_consumption_value
                         })}
                         helpText="kg de biomassa por kg de biocombustível (Base Úmida)."
                     />
 
                     {/* 3. Entrada de Biomassa (Condicional) */}
-                    {data.biomassConsumptionKnown === 'Sim' ? (
+                    {data.biomass_consumption_known === 'Sim' ? (
                         <Input
                             label="Entrada de biomassa - dado específico"
                             type="number"
                             placeholder="Ex: 1.10"
-                            value={data.biomassConsumptionValue?.toString()}
-                            onChange={(e) => onUpdate({ biomassConsumptionValue: parseFloat(e.target.value) || 0 })}
+                            value={data.biomass_consumption_value?.toString() || ''}
+                            onChange={(e) => onUpdate({ biomass_consumption_value: parseFloat(e.target.value) || 0 })}
                             helpText="Informe o valor específico (kg/kg)."
                         />
                     ) : (
@@ -81,11 +78,11 @@ export const StepBiomass: React.FC<StepBiomassProps> = ({ data, onUpdate }) => {
 
                 {/* 4. Amido de Milho */}
                 <Input
-                    label="Entrada de amido de milho (kg)"
+                    label="Entrada de amido de milho (kg/MJ)"
                     type="number"
                     placeholder="0.00"
-                    value={data.starchInput?.toString()}
-                    onChange={(e) => onUpdate({ starchInput: parseFloat(e.target.value) || 0 })}
+                    value={data.starch_input?.toString() || '0'}
+                    onChange={(e) => onUpdate({ starch_input: parseFloat(e.target.value) || 0 })}
                     helpText="Quantidade de amido utilizada como aglutinante (se houver)."
                 />
 

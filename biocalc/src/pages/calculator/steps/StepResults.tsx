@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Calculator, TrendingUp, Leaf, BarChart3, Download } from 'lucide-react';
-import { Input, Button, Card }  from '@/components/GenericComponents';
-import { ProductionData } from '@/Types/Types';
+import { Input, Button, Card } from '@/components/GenericComponents';
+import { Step10ProductionVolumeData } from '@/Types/Types';
 
 interface StepResultsProps {
-    data: ProductionData;
-    onUpdate: (data: Partial<ProductionData>) => void;
+    data: Step10ProductionVolumeData;
+    onUpdate: (data: Partial<Step10ProductionVolumeData>) => void;
 }
 
 export const StepResults: React.FC<StepResultsProps> = ({ data, onUpdate }) => {
@@ -19,19 +19,19 @@ export const StepResults: React.FC<StepResultsProps> = ({ data, onUpdate }) => {
 
     // Resultados calculados dinamicamente
     const reductionPercentage = ((FOSSIL_COMPARATOR - MOCK_BIO_IC) / FOSSIL_COMPARATOR) * 100;
-    const energyContent = (data.totalProductionVolume * 1000) * LHV_PELLET; // em MJ
+    const energyContent = (data.production_volume * 1000) * LHV_PELLET; // em MJ
     const avoidedEmissions = (energyContent * (FOSSIL_COMPARATOR - MOCK_BIO_IC)) / 1000000; // tCO2eq
     const estimatedCBIOs = Math.floor(avoidedEmissions); // 1 CBIO = 1 ton CO2 evitada
 
     const handleCalculate = () => {
-        if (data.totalProductionVolume > 0) {
+        if (data.production_volume > 0) {
             setIsCalculated(true);
         }
     };
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
-            
+
             {/* BLOCO 1: Input Final de Volume */}
             <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
                 <div className="flex flex-col md:flex-row items-end gap-4">
@@ -44,18 +44,18 @@ export const StepResults: React.FC<StepResultsProps> = ({ data, onUpdate }) => {
                             label="Produção Anual (Toneladas)"
                             placeholder="Ex: 12000"
                             type="number"
-                            value={data.totalProductionVolume.toString()}
+                            value={data.production_volume?.toString() || '0'}
                             onChange={(e) => {
-                                onUpdate({ totalProductionVolume: parseFloat(e.target.value) || 0 });
+                                onUpdate({ production_volume: parseFloat(e.target.value) || 0 });
                                 setIsCalculated(false); // Reseta se mudar o valor
                             }}
                             helpText="Quantidade de pellets/briquetes comercializada no período."
                         />
                     </div>
                     <div className="w-full md:w-auto pb-1">
-                        <Button 
-                            onClick={handleCalculate} 
-                            disabled={!data.totalProductionVolume}
+                        <Button
+                            onClick={handleCalculate}
+                            disabled={!data.production_volume}
                             className="w-full md:w-auto h-[42px]"
                             icon={BarChart3}
                         >
@@ -68,7 +68,7 @@ export const StepResults: React.FC<StepResultsProps> = ({ data, onUpdate }) => {
             {/* BLOCO 2: Dashboard de Resultados (Condicional) */}
             {isCalculated && (
                 <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-700">
-                    
+
                     <div className="flex items-center justify-between">
                         <h2 className="text-xl font-bold text-slate-900">Resultado Preliminar</h2>
                         <span className="text-xs font-mono bg-yellow-100 text-yellow-800 px-2 py-1 rounded">SIMULAÇÃO FRONTEND</span>
@@ -84,7 +84,7 @@ export const StepResults: React.FC<StepResultsProps> = ({ data, onUpdate }) => {
                                 <span className="text-xs text-slate-500">gCO₂eq/MJ</span>
                             </div>
                             <div className="mt-2 text-xs text-blue-600 font-medium">
-                                Nota de Eficiência: {(100 - (MOCK_BIO_IC/FOSSIL_COMPARATOR)*100).toFixed(1)}
+                                Nota de Eficiência: {(100 - (MOCK_BIO_IC / FOSSIL_COMPARATOR) * 100).toFixed(1)}
                             </div>
                         </Card>
 
@@ -136,7 +136,7 @@ export const StepResults: React.FC<StepResultsProps> = ({ data, onUpdate }) => {
                                     <span className="font-bold text-emerald-700">{MOCK_BIO_IC.toFixed(2)} gCO₂eq/MJ</span>
                                 </div>
                                 <div className="w-full bg-emerald-100 rounded-full h-6 relative">
-                                    <div 
+                                    <div
                                         className="bg-emerald-500 h-6 rounded-full flex items-center justify-end pr-2 text-white text-xs font-bold transition-all duration-1000"
                                         style={{ width: `${(MOCK_BIO_IC / FOSSIL_COMPARATOR) * 100}%` }}
                                     >
@@ -176,7 +176,7 @@ export const StepResults: React.FC<StepResultsProps> = ({ data, onUpdate }) => {
                                 </li>
                             </ul>
                         </Card>
-                        
+
                         <div className="bg-emerald-900 rounded-xl p-6 text-white flex flex-col justify-center items-center text-center">
                             <Leaf size={48} className="mb-4 text-emerald-300" />
                             <h3 className="text-lg font-bold">Projeto Elegível ao RenovaBio</h3>

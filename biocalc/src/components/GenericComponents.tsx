@@ -17,6 +17,7 @@ interface SelectProps {
   options: string[];
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  helpText?: string;
 }
 
 
@@ -30,6 +31,9 @@ interface InputProps {
   icon?: React.ElementType;
   readOnly?: boolean;
   required?: boolean;
+  min?: string;
+  max?: string;
+  disabled?: boolean;
 }
 
 interface CardProps {
@@ -47,18 +51,18 @@ interface ModalProps {
   onClose?: () => void;
 }
 
-export const Button = ({ 
-  children, 
-  variant = 'primary', 
-  size = 'md', 
-  className = '', 
+export const Button = ({
+  children,
+  variant = 'primary',
+  size = 'md',
+  className = '',
   onClick,
   icon: Icon,
   type = 'button',
   disabled
 }: ButtonProps) => {
   const baseStyles = "inline-flex items-center justify-center font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed rounded-md";
-  
+
   const variants = {
     primary: "bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-500 shadow-sm",
     secondary: "bg-slate-800 text-white hover:bg-slate-900 focus:ring-slate-500 shadow-sm",
@@ -74,7 +78,7 @@ export const Button = ({
   };
 
   return (
-    <button 
+    <button
       type={type}
       disabled={disabled}
       className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
@@ -87,7 +91,7 @@ export const Button = ({
 };
 
 // --- INPUT ---
-export const Input = ({ label, type = "text", placeholder, value, onChange, helpText, icon: Icon, readOnly, required }: InputProps) => (
+export const Input = ({ label, type = "text", placeholder, value, onChange, helpText, icon: Icon, readOnly, required, min, max, disabled }: InputProps) => (
   <div className="mb-4">
     {label && <label className="block text-sm font-medium text-slate-700 mb-1">{label}</label>}
     <div className="relative rounded-md shadow-sm">
@@ -99,7 +103,10 @@ export const Input = ({ label, type = "text", placeholder, value, onChange, help
       <input
         type={type}
         readOnly={readOnly}
-        className={`block w-full rounded-md border-slate-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm py-2 px-3 border ${Icon ? 'pl-10' : ''}`}
+        disabled={disabled}
+        min={min}
+        max={max}
+        className={`block w-full rounded-md border-slate-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm py-2 px-3 border ${Icon ? 'pl-10' : ''} ${disabled ? 'bg-slate-100 cursor-not-allowed' : ''}`}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
@@ -111,7 +118,7 @@ export const Input = ({ label, type = "text", placeholder, value, onChange, help
 );
 
 // --- SELECT ---
-export const Select = ({ label, options, value, onChange }: SelectProps) => (
+export const Select = ({ label, options, value, onChange, helpText }: SelectProps) => (
   <div className="mb-4">
     <label className="block text-sm font-medium text-slate-700 mb-1">{label}</label>
     <select
@@ -124,6 +131,7 @@ export const Select = ({ label, options, value, onChange }: SelectProps) => (
         <option key={opt} value={opt}>{opt}</option>
       ))}
     </select>
+    {helpText && <p className="mt-1 text-xs text-slate-500">{helpText}</p>}
   </div>
 );
 
@@ -144,10 +152,10 @@ export const Card = ({ children, title, className = '', action }: CardProps) => 
 
 // --- BADGE ---
 export const Badge = ({ status }: { status: string }) => {
-  const styles = status === 'Concluído' 
-    ? 'bg-emerald-100 text-emerald-800' 
+  const styles = status === 'Concluído'
+    ? 'bg-emerald-100 text-emerald-800'
     : 'bg-amber-100 text-amber-800';
-  
+
   return (
     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${styles}`}>
       {status}
