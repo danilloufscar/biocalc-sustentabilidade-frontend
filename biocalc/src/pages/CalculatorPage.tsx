@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Settings, Sprout, Truck, CheckCircle, AlertCircle, FileText, Save, ArrowRight, Info, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button, Input, Select, Card, Modal } from '../components/GenericComponents'; // Ajuste o import conforme sua estrutura
 
@@ -79,12 +79,12 @@ export const CalculatorPage = ({ onCancel }: { onCancel?: () => void }) => {
     const handleBack = () => setStep(step - 1);
 
     // --- ESTILOS AUXILIARES PARA AS CÉLULAS DA PLANILHA ---
-    
-/*     // Célula Verde Claro (Entrada de Dados)
-    const inputGreenClass = "bg-emerald-50 border-emerald-200 focus:bg-white focus:border-emerald-500 transition-colors";
-    
-    // Célula Azul Claro (Cálculo Automático/Lookup)
-    const inputBlueAutoClass = "bg-blue-50 border-blue-200 text-blue-800 font-medium cursor-not-allowed"; */
+
+    /*     // Célula Verde Claro (Entrada de Dados)
+        const inputGreenClass = "bg-emerald-50 border-emerald-200 focus:bg-white focus:border-emerald-500 transition-colors";
+        
+        // Célula Azul Claro (Cálculo Automático/Lookup)
+        const inputBlueAutoClass = "bg-blue-50 border-blue-200 text-blue-800 font-medium cursor-not-allowed"; */
 
     return (
         <div className="max-w-5xl mx-auto pb-20">
@@ -107,9 +107,8 @@ export const CalculatorPage = ({ onCancel }: { onCancel?: () => void }) => {
                 ].map((s, idx, arr) => (
                     <div key={s.id} className="flex items-center flex-1">
                         <div className={`flex flex-col items-center ${step >= s.id ? 'text-emerald-600' : 'text-slate-400'}`}>
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all ${
-                                step >= s.id ? 'border-emerald-600 bg-emerald-50' : 'border-slate-300 bg-white'
-                            }`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all ${step >= s.id ? 'border-emerald-600 bg-emerald-50' : 'border-slate-300 bg-white'
+                                }`}>
                                 <s.icon size={20} />
                             </div>
                             <span className="text-xs font-medium mt-2">{s.name}</span>
@@ -128,60 +127,60 @@ export const CalculatorPage = ({ onCancel }: { onCancel?: () => void }) => {
                 {step === 1 && (
                     <Card title="1. Identificação da Empresa e Projeto" className="animate-fadeIn">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <Input 
-                                label="Nome do Projeto (Identificação Interna)" 
+                            <Input
+                                label="Nome do Projeto (Identificação Interna)"
                                 value={formData.projectName}
                                 onChange={(e) => handleInputChange('projectName', e.target.value)}
-                              
+
                             />
-                            <Input 
-                                label="Nome da Empresa" 
+                            <Input
+                                label="Nome da Empresa"
                                 placeholder="Ex: BioEnergia S.A."
                                 value={formData.companyName}
                                 onChange={(e) => handleInputChange('companyName', e.target.value)}
-                              
+
                             />
-                            <Input 
-                                label="CNPJ" 
+                            <Input
+                                label="CNPJ"
                                 placeholder="00.000.000/0000-00"
                                 value={formData.cnpj}
                                 onChange={(e) => handleInputChange('cnpj', e.target.value)}
-                              
+
                             />
                             <div className="grid grid-cols-2 gap-4">
-                                <Input 
-                                    label="Estado (UF)" 
+                                <Input
+                                    label="Estado (UF)"
                                     placeholder="SP"
                                     value={formData.state}
                                     onChange={(e) => handleInputChange('state', e.target.value)}
-                                  
+
                                 />
-                                <Input 
-                                    label="Cidade" 
+                                <Input
+                                    label="Cidade"
                                     placeholder="São Paulo"
                                     value={formData.city}
                                     onChange={(e) => handleInputChange('city', e.target.value)}
-                                  
+
                                 />
                             </div>
-                            <Input 
-                                label="Responsável Técnico" 
+                            <Input
+                                label="Responsável Técnico"
                                 value={formData.techResponsible}
                                 onChange={(e) => handleInputChange('techResponsible', e.target.value)}
-                              
+
                             />
                             <div className="grid grid-cols-2 gap-4">
-                                <Input 
-                                    label="Telefone" 
+                                <Input
+                                    label="Telefone"
                                     value={formData.phone}
                                     onChange={(e) => handleInputChange('phone', e.target.value)}
-                                  
+
                                 />
-                                <Input 
-                                    label="E-mail" 
+                                <Input
+                                    label="E-mail"
                                     value={formData.email}
                                     onChange={(e) => handleInputChange('email', e.target.value)}
-                                  
+
                                 />
                             </div>
                         </div>
@@ -193,18 +192,18 @@ export const CalculatorPage = ({ onCancel }: { onCancel?: () => void }) => {
                     <Card title="2. Definição da Biomassa" className="animate-fadeIn">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Célula Verde: Seleção */}
-                            <Select 
-                                label="Biocombustível Sólido (Fonte de Biomassa)" 
+                            <Select
+                                label="Biocombustível Sólido (Fonte de Biomassa)"
                                 options={BIOMASS_OPTIONS}
                                 value={formData.biomass}
                                 onChange={(e) => handleInputChange('biomass', e.target.value)}
-                              
+
                             />
 
                             {/* Célula Azul: Automático */}
                             <div className="relative">
-                                <Input 
-                                    label="PCI (Poder Calorífico Inferior) - MJ/kg" 
+                                <Input
+                                    label="PCI (Poder Calorífico Inferior) - MJ/kg"
                                     value={formData.pci}
                                     readOnly={true}
                                     helpText="Dado preenchido automaticamente com base na referência bibliográfica (Matheus et al.)."
@@ -213,15 +212,15 @@ export const CalculatorPage = ({ onCancel }: { onCancel?: () => void }) => {
                             </div>
 
                             {/* Célula Verde: Input Numérico */}
-                            <Input 
-                                label="Volume de Produção Elegível (t/ano)" 
-                                type="number" 
+                            <Input
+                                label="Volume de Produção Elegível (t/ano)"
+                                type="number"
                                 value={formData.prodVolume}
                                 onChange={(e) => handleInputChange('prodVolume', e.target.value)}
-                              
+
                                 helpText="Quantidade total produzida no ano base para certificação."
                             />
-                            
+
                             {/* Nota informativa */}
                             <div className="md:col-span-2 bg-blue-50 p-4 rounded-md border border-blue-100 flex gap-3">
                                 <AlertCircle className="text-blue-600 shrink-0 mt-0.5" size={20} />
@@ -241,33 +240,33 @@ export const CalculatorPage = ({ onCancel }: { onCancel?: () => void }) => {
                         <Card title="3.1 Distribuição - Mercado Doméstico">
                             <p className="text-sm text-slate-500 mb-4">Preencha os dados referentes ao transporte da fábrica até o consumidor final no Brasil.</p>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                <Input 
-                                    label="Qtd. Transportada (kg/ano)" 
+                                <Input
+                                    label="Qtd. Transportada (kg/ano)"
                                     type="number"
                                     value={formData.dom_mass}
                                     onChange={(e) => handleInputChange('dom_mass', e.target.value)}
-                                  
+
                                 />
-                                <Input 
-                                    label="Distância Média (km)" 
+                                <Input
+                                    label="Distância Média (km)"
                                     type="number"
                                     value={formData.dom_distance}
                                     onChange={(e) => handleInputChange('dom_distance', e.target.value)}
-                                  
+
                                 />
-                                <Input 
-                                    label="% Modal Rodoviário" 
+                                <Input
+                                    label="% Modal Rodoviário"
                                     type="number"
                                     value={formData.dom_modal_road_pct}
                                     onChange={(e) => handleInputChange('dom_modal_road_pct', e.target.value)}
-                                  
+
                                 />
-                                <Select 
+                                <Select
                                     label="Tipo de Veículo"
                                     options={VEHICLE_OPTIONS}
                                     value={formData.dom_vehicle_type}
                                     onChange={(e) => handleInputChange('dom_vehicle_type', e.target.value)}
-                                  
+
                                 />
                             </div>
                         </Card>
@@ -289,48 +288,48 @@ export const CalculatorPage = ({ onCancel }: { onCancel?: () => void }) => {
                                     <div className="md:col-span-2">
                                         <h4 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">Fábrica até Porto</h4>
                                     </div>
-                                    
-                                    <Input 
-                                        label="Qtd. Exportada (t/ano)" 
+
+                                    <Input
+                                        label="Qtd. Exportada (t/ano)"
                                         type="number"
                                         value={formData.exp_mass}
                                         onChange={(e) => handleInputChange('exp_mass', e.target.value)}
-                                      
+
                                     />
-                                    <Input 
-                                        label="Distância até Porto (km)" 
+                                    <Input
+                                        label="Distância até Porto (km)"
                                         type="number"
                                         value={formData.exp_factory_port_dist}
                                         onChange={(e) => handleInputChange('exp_factory_port_dist', e.target.value)}
-                                      
+
                                         helpText="Consulta pode ser efetuada no site: gov.br"
                                     />
-                                    
+
                                     <div className="grid grid-cols-3 gap-2 md:col-span-2">
-                                        <Input 
-                                            label="% Rodoviário" 
-                                            type="number" 
+                                        <Input
+                                            label="% Rodoviário"
+                                            type="number"
                                             value={formData.exp_modal_road_pct}
                                             onChange={(e) => handleInputChange('exp_modal_road_pct', e.target.value)}
-                                          
+
                                         />
-                                        <Input 
-                                            label="% Ferroviário" 
-                                            type="number" 
+                                        <Input
+                                            label="% Ferroviário"
+                                            type="number"
                                             value={formData.exp_modal_rail_pct}
                                             onChange={(e) => handleInputChange('exp_modal_rail_pct', e.target.value)}
-                                          
+
                                         />
-                                        <Input 
-                                            label="% Hidroviário" 
-                                            type="number" 
+                                        <Input
+                                            label="% Hidroviário"
+                                            type="number"
                                             value={formData.exp_modal_water_pct}
                                             onChange={(e) => handleInputChange('exp_modal_water_pct', e.target.value)}
-                                          
+
                                         />
                                     </div>
 
-                                    <Select 
+                                    <Select
                                         label="Veículo Rodoviário (Porto)"
                                         options={VEHICLE_OPTIONS}
                                         value={formData.exp_vehicle_port}
@@ -339,8 +338,8 @@ export const CalculatorPage = ({ onCancel }: { onCancel?: () => void }) => {
 
                                     <div className="md:col-span-2 mt-4">
                                         <h4 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">Porto até Consumidor Final</h4>
-                                        <Input 
-                                            label="Distância Marítima (km)" 
+                                        <Input
+                                            label="Distância Marítima (km)"
                                             type="number"
                                             value={formData.exp_port_consumer_dist}
                                             onChange={(e) => handleInputChange('exp_port_consumer_dist', e.target.value)}
@@ -359,7 +358,7 @@ export const CalculatorPage = ({ onCancel }: { onCancel?: () => void }) => {
                         {/* Cabeçalho de Resultados (Estilo Azul Escuro - Célula de Resultado) */}
                         <div className="bg-slate-800 text-white rounded-lg p-8 shadow-xl">
                             <h3 className="text-lg font-medium opacity-80 mb-6 border-b border-slate-700 pb-2">Resultados Consolidados (BioCalc)</h3>
-                            
+
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                                 <div>
                                     <p className="text-sm text-slate-400 mb-1">Intensidade de Carbono</p>
@@ -414,7 +413,7 @@ export const CalculatorPage = ({ onCancel }: { onCancel?: () => void }) => {
                                     </tbody>
                                 </table>
                             </div>
-                            
+
                             <div className="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4">
                                 <Button variant="outline" icon={FileText}>Exportar Relatório PDF</Button>
                                 <Button icon={Save} onClick={() => setShowResultsModal(true)}>Salvar Projeto</Button>
@@ -427,14 +426,14 @@ export const CalculatorPage = ({ onCancel }: { onCancel?: () => void }) => {
             {/* Navegação Inferior */}
             <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 md:pl-72 z-10">
                 <div className="max-w-5xl mx-auto flex justify-between">
-                    <Button 
-                        variant="ghost" 
-                        onClick={handleBack} 
+                    <Button
+                        variant="ghost"
+                        onClick={handleBack}
                         disabled={step === 1}
                     >
                         Voltar
                     </Button>
-                    
+
                     {step < 4 ? (
                         <Button onClick={handleNext} icon={ArrowRight}>
                             Próximo Passo
@@ -444,8 +443,8 @@ export const CalculatorPage = ({ onCancel }: { onCancel?: () => void }) => {
             </div>
 
             {/* Modal de Sucesso */}
-            <Modal 
-                isOpen={showResultsModal} 
+            <Modal
+                isOpen={showResultsModal}
                 onClose={() => setShowResultsModal(false)}
                 title="Projeto Salvo"
                 footer={

@@ -1,131 +1,126 @@
 import React from 'react';
-import { Building, MapPin, User, FileText } from 'lucide-react';
-import { Input, Select, Card } from '@/components/GenericComponents';
-import { IdentificationData } from '@/Types/Types';
-
-const BRAZIL_STATES = [
-    'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 
-    'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 
-    'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
-];
+import { Building2, Info } from 'lucide-react';
+import { Input, Card } from '../../../components/GenericComponents';
+import { Step0IdentificationData } from '../../../Types/Types';
 
 interface StepIdentificationProps {
-    data: IdentificationData;
-    onUpdate: (data: Partial<IdentificationData>) => void;
+    data: Step0IdentificationData;
+    onUpdate: (data: Partial<Step0IdentificationData>) => void;
 }
 
 export const StepIdentification: React.FC<StepIdentificationProps> = ({ data, onUpdate }) => {
-
-    const handleChange = (field: keyof IdentificationData, value: string) => {
-        onUpdate({ [field]: value });
-    };
-
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
-            
-            <div className="bg-slate-50 border-l-4 border-slate-500 p-4 mb-6">
+
+            {/* Header Visual */}
+            <div className="bg-emerald-50 border-l-4 border-emerald-500 p-4 mb-6">
                 <div className="flex">
-                    <div className="flex-shrink-0">
-                        <FileText className="h-5 w-5 text-slate-500" />
-                    </div>
-                    <div className="ml-3">
-                        <h3 className="text-sm font-medium text-slate-800">Dados do Projeto</h3>
-                        <p className="text-sm text-slate-600 mt-1">
-                            Estas informações serão utilizadas para identificar o projeto no Dashboard e gerar o cabeçalho do relatório final.
+                    <Building2 className="h-5 w-5 text-emerald-500 mr-3" />
+                    <div>
+                        <h3 className="text-sm font-medium text-emerald-800">Identificação do Projeto</h3>
+                        <p className="text-sm text-emerald-700 mt-1">
+                            Preencha os dados básicos de identificação da empresa e do projeto.
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                {/* BLOCO 1: Identificação da Empresa */}
-                <Card className="md:col-span-2">
-                    <div className="flex items-center gap-2 mb-4 border-b pb-2 border-slate-100">
-                        <Building className="text-emerald-600" size={20} />
-                        <h3 className="font-semibold text-slate-800">Empresa e Projeto</h3>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="md:col-span-2">
-                            <Input
-                                label="Nome do Projeto (Identificação Interna)"
-                                placeholder="Ex: Planta de Pellets - Lote 2024"
-                                value={data.projectName}
-                                onChange={(e) => handleChange('projectName', e.target.value)}
-                                helpText="Como você quer encontrar este cálculo depois no seu Dashboard?"
-                            />
-                        </div>
-                        <Input
-                            label="Razão Social / Nome da Empresa"
-                            placeholder="Ex: BioEnergia S.A."
-                            value={data.companyName}
-                            onChange={(e) => handleChange('companyName', e.target.value)}
-                        />
-                        <Input
-                            label="CNPJ"
-                            placeholder="00.000.000/0000-00"
-                            value={data.cnpj}
-                            onChange={(e) => handleChange('cnpj', e.target.value)}
-                        />
-                    </div>
-                </Card>
+            <Card className="space-y-6">
 
-                {/* BLOCO 2: Localização */}
-                <Card>
-                    <div className="flex items-center gap-2 mb-4 border-b pb-2 border-slate-100">
-                        <MapPin className="text-blue-500" size={20} />
-                        <h3 className="font-semibold text-slate-800">Localização da Unidade</h3>
-                    </div>
-                    <div className="space-y-4">
-                        <Select
-                            label="Estado (UF)"
-                            options={BRAZIL_STATES}
-                            value={data.state || 'SP'}
-                            onChange={(e) => handleChange('state', e.target.value)}
-                        />
-                        <Input
-                            label="Cidade / Município"
-                            placeholder="Ex: Sorocaba"
-                            value={data.city}
-                            onChange={(e) => handleChange('city', e.target.value)}
-                        />
-                    </div>
-                </Card>
+                {/* 1. Nome do Projeto */}
+                <Input
+                    label="Nome do Projeto"
+                    type="text"
+                    placeholder="Ex: Projeto Biomassa 2024"
+                    value={data.name || ''}
+                    onChange={(e) => onUpdate({ name: e.target.value })}
+                    helpText="Identificação do projeto no sistema."
+                    required
+                />
 
-                {/* BLOCO 3: Responsável Técnico */}
-                <Card>
-                    <div className="flex items-center gap-2 mb-4 border-b pb-2 border-slate-100">
-                        <User className="text-slate-500" size={20} />
-                        <h3 className="font-semibold text-slate-800">Responsável Técnico</h3>
-                    </div>
-                    <div className="space-y-4">
-                        <Input
-                            label="Nome do Responsável"
-                            placeholder="Ex: Eng. Ricardo Silva"
-                            value={data.techResponsible}
-                            onChange={(e) => handleChange('techResponsible', e.target.value)}
-                        />
-                        <div className="grid grid-cols-2 gap-4">
-                            <Input
-                                label="Telefone"
-                                placeholder="(00) 00000-0000"
-                                value={data.phone}
-                                onChange={(e) => handleChange('phone', e.target.value)}
-                                // icon={Phone}
-                            />
-                            <Input
-                                label="E-mail"
-                                placeholder="contato@empresa.com"
-                                type="email"
-                                value={data.email}
-                                onChange={(e) => handleChange('email', e.target.value)}
-                                // icon={Mail}
-                            />
-                        </div>
-                    </div>
-                </Card>
+                {/* 2. Dados da Empresa */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <Input
+                        label="Nome da Empresa"
+                        type="text"
+                        placeholder="Ex: BioEnergia S.A."
+                        value={data.company_name || ''}
+                        onChange={(e) => onUpdate({ company_name: e.target.value })}
+                        helpText="Razão social da empresa."
+                    />
 
-            </div>
+                    <Input
+                        label="CNPJ"
+                        type="text"
+                        placeholder="00.000.000/0000-00"
+                        value={data.cnpj || ''}
+                        onChange={(e) => onUpdate({ cnpj: e.target.value })}
+                        helpText="CNPJ da empresa."
+                    />
+                </div>
+
+                {/* 3. Localização */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <Input
+                        label="Estado"
+                        type="text"
+                        placeholder="Ex: SP"
+                        value={data.state || ''}
+                        onChange={(e) => onUpdate({ state: e.target.value })}
+                        helpText="Estado da unidade produtora."
+                    />
+
+                    <Input
+                        label="Cidade"
+                        type="text"
+                        placeholder="Ex: São Carlos"
+                        value={data.city || ''}
+                        onChange={(e) => onUpdate({ city: e.target.value })}
+                        helpText="Cidade da unidade produtora."
+                    />
+                </div>
+
+                {/* 4. Responsável Técnico */}
+                <Input
+                    label="Responsável Técnico"
+                    type="text"
+                    placeholder="Ex: João Silva"
+                    value={data.tech_responsible || ''}
+                    onChange={(e) => onUpdate({ tech_responsible: e.target.value })}
+                    helpText="Nome do responsável técnico pelo projeto."
+                />
+
+                {/* 5. Contato */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <Input
+                        label="E-mail"
+                        type="email"
+                        placeholder="contato@empresa.com.br"
+                        value={data.email || ''}
+                        onChange={(e) => onUpdate({ email: e.target.value })}
+                        helpText="E-mail para contato."
+                    />
+
+                    <Input
+                        label="Telefone"
+                        type="tel"
+                        placeholder="(00) 00000-0000"
+                        value={data.phone || ''}
+                        onChange={(e) => onUpdate({ phone: e.target.value })}
+                        helpText="Telefone para contato."
+                    />
+                </div>
+
+                {/* Info Box */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start">
+                    <Info className="h-5 w-5 text-blue-500 mr-3 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-blue-800">
+                        Estes dados serão utilizados para identificação do projeto e emissão de relatórios.
+                        Certifique-se de que as informações estão corretas.
+                    </p>
+                </div>
+
+            </Card>
         </div>
     );
 };
