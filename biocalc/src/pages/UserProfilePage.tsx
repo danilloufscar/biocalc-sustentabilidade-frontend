@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { User, Save, Building, Mail, Lock } from 'lucide-react';
 import { Input, Button, Card } from '../components/GenericComponents';
-import { useGetCurrentUserQuery } from '@/services/authApi';
 import toast from 'react-hot-toast';
+import { useGetCurrentUserQuery, useUpdateCurrentUserMutation } from '@/services/ApiService';
 
 export const UserProfilePage = () => {
   // Busca dados do usuário atual
   const { data: currentUser, isLoading, error } = useGetCurrentUserQuery();
-  
+    const [updateUser, { isLoading: isUpdating }] = useUpdateCurrentUserMutation();
   const [formData, setFormData] = useState({
     name: '',
     company: '',
@@ -16,7 +16,6 @@ export const UserProfilePage = () => {
     confirmPassword: ''
   });
 
-  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (currentUser) {
@@ -30,23 +29,41 @@ export const UserProfilePage = () => {
     }
   }, [currentUser]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+ const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validação de senha
     if (formData.password && formData.password !== formData.confirmPassword) {
       toast.error('As senhas não coincidem');
       return;
     }
 
-    setIsSaving(true);
-    
-    // TODO: Implementar chamada API para atualizar perfil
-    setTimeout(() => {
-      setIsSaving(false);
+    try {
+      const updateData: any = {
+        name: formData.name,
+        company_name: formData.company,
+      };
+
+      if (formData.password) {
+        updateData.password = formData.password;
+      }
+
+      await updateUser(updateData).unwrap();
+      
       toast.success('Perfil atualizado com sucesso!');
-    }, 1000);
+      
+      setFormData(prev => ({
+        ...prev,
+        password: '',
+        confirmPassword: ''
+      }));
+      
+    } catch (err: any) {
+      console.error('Erro ao atualizar:', err);
+      const errorMessage = err?.data?.detail || 'Erro ao atualizar perfil';
+      toast.error(errorMessage);
+    }
   };
+
 
   // Loading state
   if (isLoading) {
@@ -171,8 +188,8 @@ export const UserProfilePage = () => {
               </div>
 
               <div className="flex justify-end pt-4">
-                <Button type="submit" icon={Save} disabled={isSaving}>
-                  {isSaving ? 'Salvando...' : 'Salvar Alterações'}
+               <Button type="submit" icon={Save} disabled={isUpdating}>
+                  {isUpdating ? 'Salvando...' : 'Salvar Alterações'}
                 </Button>
               </div>
             </form>

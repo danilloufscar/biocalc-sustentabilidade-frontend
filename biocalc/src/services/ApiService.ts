@@ -1,6 +1,6 @@
 // src/store/api/projectApi.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ProjectPayload } from '@/Types/Types';
+import { ProjectPayload, UserCreate, UserResponse } from '@/Types/Types';
 
 export const projectApi = createApi({
   reducerPath: 'projectApi',
@@ -13,7 +13,7 @@ export const projectApi = createApi({
        return headers;
     }
   }),
-  tagTypes: ['Project'],
+  tagTypes: ['Project', 'User'],
   endpoints: (builder) => ({
     
     // Step 0: Criar Projeto
@@ -49,6 +49,21 @@ export const projectApi = createApi({
       query: (id) => `/projects/${id}`,
       providesTags: ['Project'],
     }),
+
+      updateCurrentUser: builder.mutation<UserResponse, Partial<UserCreate>>({
+      query: (userData) => ({
+        url: '/users/me',
+        method: 'PUT',
+        body: userData,
+      }),
+      invalidatesTags: ['User'],
+    }),
+
+     getCurrentUser: builder.query<UserResponse, void>({
+      query: () => '/users/me',
+      providesTags: ['User'],
+    }),
+
   }),
 });
 
@@ -56,5 +71,7 @@ export const {
   useCreateProjectMutation, 
   useUpdateProjectStepMutation, 
   useCalculateResultsMutation,
-  useGetProjectQuery 
+  useGetProjectQuery,
+  useUpdateCurrentUserMutation,
+  useGetCurrentUserQuery
 } = projectApi;

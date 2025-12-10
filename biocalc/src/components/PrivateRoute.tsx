@@ -1,6 +1,7 @@
 // src/components/PrivateRoute.tsx
+import { useGetCurrentUserQuery } from '@/services/ApiService';
 import { Navigate } from 'react-router-dom';
-import { useGetCurrentUserQuery } from '@/services/authApi';
+
 
 interface PrivateRouteProps {
   children: React.ReactNode;

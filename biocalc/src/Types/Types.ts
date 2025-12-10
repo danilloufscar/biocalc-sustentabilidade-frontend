@@ -218,4 +218,32 @@ export interface Project {
     carbonIntensity: number;
     cbios: number;
     date: string;
+    identification: IdentificationData;
+    biomass: BiomassData;
+    agricultural: AgriculturalData;
+    industrial: IndustrialData;
+    logistics: LogisticsData;
+    production: ProductionData;
+}
+
+export interface UserCreate {
+  name: string;
+  email: string;
+  password: string;
+  company_name: string;
+  cnpj: string;
+}
+
+export interface UserResponse {
+  id: number;
+  name: string;
+  email: string;
+  company_name: string;
+  cnpj: string;
+  created_at: string;
+}
+
+export interface LogoutResponse {
+  message: string;
+  user: string;
 }
