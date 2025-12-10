@@ -28,7 +28,7 @@ export const LoginPage = () => {
   // Quando os dados do usuário chegarem, salva no Redux
   useEffect(() => {
     if (userData) {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       if (token) {
         dispatch(setCredentials({ user: userData, token }));
         toast.success('Login realizado com sucesso!');
@@ -57,9 +57,15 @@ export const LoginPage = () => {
         email: formData.email,
         password: formData.password,
       }).unwrap();
+
+      if (formData.rememberMe) {
+  localStorage.setItem('token', result.access_token);
+} else {
+  sessionStorage.setItem('token', result.access_token);
+}
       
       // Salvar token no localStorage
-      localStorage.setItem('token', result.access_token);
+      //localStorage.setItem('token', result.access_token);
       
       // Ativar query para buscar dados do usuário
       setSkipUserQuery(false);
@@ -129,9 +135,13 @@ export const LoginPage = () => {
                 </label>
               </div>
               <div className="text-sm">
-                <a href="#" className="font-medium text-emerald-600 hover:text-emerald-500">
-                  Esqueceu a senha?
-                </a>
+                <button
+            type="button"
+              onClick={() => navigate('/forgot-password')}
+              className="font-medium text-emerald-600 hover:text-emerald-500 bg-transparent border-none p-0 cursor-pointer hover:underline"
+              >
+    Esqueceu a senha?
+  </button>
               </div>
             </div>
 

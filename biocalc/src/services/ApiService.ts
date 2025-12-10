@@ -1,6 +1,6 @@
 // src/store/api/projectApi.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ProjectPayload, UserCreate, UserResponse } from '@/Types/Types';
+import { PasswordReset, PasswordResetRequest, ProjectPayload, UserCreate, UserResponse } from '@/Types/Types';
 
 export const projectApi = createApi({
   reducerPath: 'projectApi',
@@ -63,7 +63,20 @@ export const projectApi = createApi({
       query: () => '/users/me',
       providesTags: ['User'],
     }),
-
+    forgotPassword: builder.mutation<{ message: string }, PasswordResetRequest>({
+      query: (data) => ({
+        url: '/auth/forgot-password',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    resetPassword: builder.mutation<{ message: string }, PasswordReset>({
+      query: (data) => ({
+        url: '/auth/reset-password',
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -73,5 +86,7 @@ export const {
   useCalculateResultsMutation,
   useGetProjectQuery,
   useUpdateCurrentUserMutation,
-  useGetCurrentUserQuery
+  useGetCurrentUserQuery,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
 } = projectApi;
