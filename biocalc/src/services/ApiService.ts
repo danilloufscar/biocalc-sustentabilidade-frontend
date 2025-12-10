@@ -77,6 +77,25 @@ export const projectApi = createApi({
         body: data,
       }),
     }),
+     getProjects: builder.query<ProjectListItem[], void>({
+    query: () => '/projects',
+    providesTags: (result) =>
+      result
+        ? [
+            ...result.map(({ id }) => ({ type: 'Project' as const, id })),
+            { type: 'Project', id: 'LIST' },
+          ]
+        : [{ type: 'Project', id: 'LIST' }],
+  }),
+
+  // Deletar projeto
+  deleteProject: builder.mutation<void, number>({
+    query: (projectId) => ({
+      url: `/projects/${projectId}`,
+      method: 'DELETE',
+    }),
+    invalidatesTags: [{ type: 'Project', id: 'LIST' }],
+  }),
   }),
 });
 
@@ -89,4 +108,6 @@ export const {
   useGetCurrentUserQuery,
   useForgotPasswordMutation,
   useResetPasswordMutation,
+  useGetProjectsQuery,
+  useDeleteProjectMutation
 } = projectApi;

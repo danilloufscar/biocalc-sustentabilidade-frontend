@@ -14,11 +14,11 @@ interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
 }
-const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
 const initialState: AuthState = {
   user: null,
-  token: token,
-  isAuthenticated: !!token,
+  token: localStorage.getItem('token'),
+  isAuthenticated: !!localStorage.getItem('token'),
 };
 
 const authSlice = createSlice({
@@ -32,6 +32,7 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.isAuthenticated = true;
+      localStorage.setItem('token', action.payload.token);
     },
     setUser: (state, action: PayloadAction<UserState>) => {
       state.user = action.payload;
@@ -40,6 +41,7 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
+      localStorage.removeItem('token');
     },
   },
 });

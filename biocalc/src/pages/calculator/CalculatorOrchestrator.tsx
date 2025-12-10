@@ -381,9 +381,6 @@ export const CalculatorOrchestrator = () => {
                         Etapa {currentStep + 1} de 11: <span className={`font-semibold text-${stepInfo.color}-600`}>{stepInfo.phase}</span>
                     </p>
                 </div>
-                <Button variant="outline" icon={Save} onClick={handleSaveAndExit}>
-                    Salvar Rascunho
-                </Button>
             </div>
 
             {/* BARRA DE PROGRESSO */}

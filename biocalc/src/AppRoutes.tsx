@@ -10,23 +10,15 @@ import { CalculatorOrchestrator } from "./pages/calculator/CalculatorOrchestrato
 import { PrivateRoute } from "./components/PrivateRoute"
 import { ForgotPasswordPage } from "./pages/ForgotPasswordPage"
 import { ResetPasswordPage } from "./pages/ResetPasswordPage"
-import { useAppSelector } from "./store/hooks"
-import { selectIsAuthenticated } from "./store/slice/authSlice"
+import ProjectsList from "./pages/ProjectsList"
 
 const AppRoutes = () => {
-  const isAuthenticated = useAppSelector(selectIsAuthenticated);
   return (
     <BrowserRouter basename="/biocalc">
       <Routes>
-        <Route 
-          path="/" 
-          element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} 
-        />
+        <Route path="/" element={<Navigate to="/login" replace />} />
         
-        <Route 
-          path="/login" 
-          element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} 
-        />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/register-account" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
@@ -41,7 +33,7 @@ const AppRoutes = () => {
               <CalculatorOrchestrator />
               </PrivateRoute>
             } />
-            <Route path="/projects" element={<div className="p-8">Meus Projetos - Em construção</div>} />
+            <Route path="/projects" element={<ProjectsList />} />
             <Route path="/profile" element={
                 <PrivateRoute>
               <UserProfilePage/>

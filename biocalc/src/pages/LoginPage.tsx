@@ -28,7 +28,7 @@ export const LoginPage = () => {
   // Quando os dados do usuário chegarem, salva no Redux
   useEffect(() => {
     if (userData) {
-      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      const token = localStorage.getItem('token');
       if (token) {
         dispatch(setCredentials({ user: userData, token }));
         toast.success('Login realizado com sucesso!');
@@ -57,15 +57,10 @@ export const LoginPage = () => {
         email: formData.email,
         password: formData.password,
       }).unwrap();
-
-      if (formData.rememberMe) {
-  localStorage.setItem('token', result.access_token);
-} else {
-  sessionStorage.setItem('token', result.access_token);
-}
+      
       
       // Salvar token no localStorage
-      //localStorage.setItem('token', result.access_token);
+      localStorage.setItem('token', result.access_token);
       
       // Ativar query para buscar dados do usuário
       setSkipUserQuery(false);
@@ -121,19 +116,6 @@ export const LoginPage = () => {
             />
             
             <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input 
-                  id="remember-me" 
-                  name="remember-me" 
-                  type="checkbox" 
-                  className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-slate-300 rounded"
-                  checked={formData.rememberMe}
-                  onChange={handleChange('rememberMe')}
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-slate-900">
-                  Lembrar-me
-                </label>
-              </div>
               <div className="text-sm">
                 <button
             type="button"
