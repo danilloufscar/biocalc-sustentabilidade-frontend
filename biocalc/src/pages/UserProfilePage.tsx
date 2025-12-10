@@ -1,30 +1,86 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Save, Building, Mail, Lock } from 'lucide-react';
-// Correção: Uso de caminho relativo para garantir resolução
 import { Input, Button, Card } from '../components/GenericComponents';
+import { useGetCurrentUserQuery } from '@/services/authApi';
+import toast from 'react-hot-toast';
 
 export const UserProfilePage = () => {
-  // Mock inicial dos dados (num app real viria do seu Contexto ou API)
+  // Busca dados do usuário atual
+  const { data: currentUser, isLoading, error } = useGetCurrentUserQuery();
+  
   const [formData, setFormData] = useState({
-    name: 'Ricardo Silva',
-    company: 'BioEnergia S.A.',
-    email: 'ricardo@bioenergia.com.br',
+    name: '',
+    company: '',
+    email: '',
     password: '',
     confirmPassword: ''
   });
 
   const [isSaving, setIsSaving] = useState(false);
 
+  useEffect(() => {
+    if (currentUser) {
+      setFormData({
+        name: currentUser.name,
+        company: currentUser.company_name,
+        email: currentUser.email,
+        password: '',
+        confirmPassword: ''
+      });
+    }
+  }, [currentUser]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validação de senha
+    if (formData.password && formData.password !== formData.confirmPassword) {
+      toast.error('As senhas não coincidem');
+      return;
+    }
+
     setIsSaving(true);
     
-    // Simulação de chamada API
+    // TODO: Implementar chamada API para atualizar perfil
     setTimeout(() => {
       setIsSaving(false);
-      alert('Perfil atualizado com sucesso!');
+      toast.success('Perfil atualizado com sucesso!');
     }, 1000);
   };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="max-w-4xl mx-auto">
+        <div className="animate-pulse space-y-6">
+          <div className="h-8 bg-slate-200 rounded w-48"></div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="h-64 bg-slate-200 rounded"></div>
+            <div className="md:col-span-2 h-96 bg-slate-200 rounded"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="max-w-4xl mx-auto">
+        <Card>
+          <div className="text-center py-12">
+            <p className="text-red-600">Erro ao carregar dados do usuário</p>
+            <Button 
+              onClick={() => window.location.reload()} 
+              className="mt-4"
+            >
+              Tentar novamente
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -41,10 +97,14 @@ export const UserProfilePage = () => {
                 <User size={48} />
               </div>
               <h2 className="text-xl font-bold text-slate-900">{formData.name}</h2>
-              <p className="text-sm text-slate-500 mb-4">{formData.company}</p>
               <div className="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-full border border-emerald-100">
                 Administrador
               </div>
+              {currentUser?.created_at && (
+                <p className="text-xs text-slate-400 mt-4">
+                  Membro desde {new Date(currentUser.created_at).toLocaleDateString('pt-BR')}
+                </p>
+              )}
             </div>
           </Card>
         </div>
@@ -59,6 +119,7 @@ export const UserProfilePage = () => {
                   value={formData.name}
                   icon={User}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  required
                 />
                 
                 <Input 
@@ -66,6 +127,7 @@ export const UserProfilePage = () => {
                   value={formData.company}
                   icon={Building}
                   onChange={(e) => setFormData({...formData, company: e.target.value})}
+                  required
                 />
 
                 <Input 
@@ -74,7 +136,16 @@ export const UserProfilePage = () => {
                   value={formData.email}
                   icon={Mail}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  required
                 />
+
+                {currentUser?.cnpj && (
+                  <Input 
+                    label="CNPJ" 
+                    value={currentUser.cnpj}
+                    readOnly
+                  />
+                )}
 
                 <div className="pt-4 border-t border-slate-100 mt-4">
                   <h3 className="text-sm font-medium text-slate-900 mb-4">Alterar Senha</h3>

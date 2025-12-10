@@ -2,6 +2,7 @@ import { Input, Button, Card } from '@/components/GenericComponents';
 import { useNavigate } from 'react-router-dom';
 import { useRegisterMutation } from '@/services/authApi';
 import { useState, FormEvent } from 'react';
+import toast from 'react-hot-toast';
 
 export const RegisterPage = () => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ export const RegisterPage = () => {
     
     // Validações básicas
     if (formData.password !== formData.confirmPassword) {
-      alert('As senhas não coincidem');
+      toast.error('As senhas não coincidem');
       return;
     }
 
@@ -40,11 +41,17 @@ export const RegisterPage = () => {
       
       console.log('Usuário criado:', result);
       
+      // Mostrar toast de sucesso
+      toast.success('Conta criada com sucesso!');
+      
       // Redirecionar para login após sucesso
-      navigate('/login');
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000); // Delay para o usuário ver o toast
+      
     } catch (err: any) {
       console.error('Erro ao registrar:', err);
-      alert(err?.data?.detail || 'Erro ao criar conta');
+      toast.error(err?.data?.detail || 'Erro ao criar conta');
     }
   };
 
@@ -64,18 +71,21 @@ export const RegisterPage = () => {
               placeholder="João Silva" 
               value={formData.name}
               onChange={handleChange('name')}
+              required
             />
             <Input 
               label="Nome da Empresa" 
               placeholder="BioEnergia S.A." 
               value={formData.company_name}
               onChange={handleChange('company_name')}
+              required
             />
             <Input 
               label="CNPJ" 
               placeholder="00.000.000/0000-00" 
               value={formData.cnpj}
               onChange={handleChange('cnpj')}
+              required
             />
             <Input 
               label="E-mail" 
@@ -83,19 +93,21 @@ export const RegisterPage = () => {
               placeholder="joao@bioenergia.com.br" 
               value={formData.email}
               onChange={handleChange('email')}
+              required
             />
             <Input 
               label="Senha" 
               type="password" 
               value={formData.password}
               onChange={handleChange('password')}
+              required
             />
             <Input 
               label="Confirme a Senha" 
               type="password" 
               value={formData.confirmPassword}
               onChange={handleChange('confirmPassword')}
-              
+              required
             />
             
             {error && (

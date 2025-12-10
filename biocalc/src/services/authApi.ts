@@ -17,15 +17,27 @@ interface UserResponse {
   created_at: string;
 }
 
+interface LogoutResponse {
+  message: string;
+  user: string;
+}
+
 export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({ 
     baseUrl: 'http://localhost:8000',
+     prepareHeaders: (headers) => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        headers.set('authorization', `Bearer ${token}`);
+      }
+      return headers;
+    }
   }),
   endpoints: (builder) => ({
     register: builder.mutation<UserResponse, UserCreate>({
       query: (userData) => ({
-        url: '/register',
+        url: '/auth/register',
         method: 'POST',
         body: userData,
       }),
@@ -33,12 +45,26 @@ export const authApi = createApi({
     
     login: builder.mutation<{ access_token: string; token_type: string }, { email: string; password: string }>({
       query: (credentials) => ({
-        url: '/login',
+        url: '/auth/login',
         method: 'POST',
         body: credentials,
       }),
     }),
+
+     logout: builder.mutation<LogoutResponse, void>({
+      query: () => ({
+        url: '/auth/logout',
+        method: 'POST',
+      }),
+    }),
+     getCurrentUser: builder.query<UserResponse, void>({
+      query: () => '/auth/me',
+    }),
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation } = authApi;
+export const {
+  useRegisterMutation, 
+  useLoginMutation, 
+  useLogoutMutation,
+  useGetCurrentUserQuery  } = authApi;

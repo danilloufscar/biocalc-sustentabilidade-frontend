@@ -29,6 +29,7 @@ interface InputProps {
   helpText?: string;
   icon?: React.ElementType;
   readOnly?: boolean;
+  required?: boolean;
 }
 
 interface CardProps {
@@ -86,7 +87,7 @@ export const Button = ({
 };
 
 // --- INPUT ---
-export const Input = ({ label, type = "text", placeholder, value, onChange, helpText, icon: Icon, readOnly }: InputProps) => (
+export const Input = ({ label, type = "text", placeholder, value, onChange, helpText, icon: Icon, readOnly, required }: InputProps) => (
   <div className="mb-4">
     {label && <label className="block text-sm font-medium text-slate-700 mb-1">{label}</label>}
     <div className="relative rounded-md shadow-sm">
@@ -102,6 +103,7 @@ export const Input = ({ label, type = "text", placeholder, value, onChange, help
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        required={required}
       />
     </div>
     {helpText && <p className="mt-1 text-xs text-slate-500">{helpText}</p>}
