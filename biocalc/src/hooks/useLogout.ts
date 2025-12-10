@@ -1,36 +1,28 @@
 // src/hooks/useLogout.ts
 import { useNavigate } from 'react-router-dom';
 import { useLogoutMutation } from '@/services/authApi';
+import { useAppDispatch } from '@/store/hooks';
+import { logoutAction } from '@/store/slice/authSlice';
 import toast from 'react-hot-toast';
 
 export const useLogout = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [logoutMutation] = useLogoutMutation();
 
   const logout = async () => {
     try {
-      // Tenta fazer logout no backend (opcional, valida o token)
       await logoutMutation().unwrap();
-      
-      // Remove token do localStorage
-      localStorage.removeItem('token');
-      
-      // Toast de sucesso
+    } catch (err) {
+      console.error('Erro ao fazer logout no backend:', err);
+    } finally {
+      // Sempre limpa o estado local, mesmo se o backend falhar
+      dispatch(logoutAction());
       toast.success('Logout realizado com sucesso!');
       
-      // Redireciona para login
       setTimeout(() => {
         navigate('/login');
       }, 500);
-      
-    } catch (err: any) {
-      // Mesmo se der erro no backend, remove o token localmente
-      localStorage.removeItem('token');
-      
-      console.error('Erro ao fazer logout:', err);
-      toast.error('Sessão encerrada');
-      
-      navigate('/login');
     }
   };
 

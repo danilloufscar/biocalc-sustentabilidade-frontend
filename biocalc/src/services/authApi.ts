@@ -1,26 +1,6 @@
+import { LogoutResponse, UserCreate, UserResponse } from '@/Types/Types';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-interface UserCreate {
-  name: string;
-  email: string;
-  password: string;
-  company_name: string;
-  cnpj: string;
-}
-
-interface UserResponse {
-  id: number;
-  name: string;
-  email: string;
-  company_name: string;
-  cnpj: string;
-  created_at: string;
-}
-
-interface LogoutResponse {
-  message: string;
-  user: string;
-}
 
 export const authApi = createApi({
   reducerPath: 'authApi',
@@ -57,14 +37,10 @@ export const authApi = createApi({
         method: 'POST',
       }),
     }),
-     getCurrentUser: builder.query<UserResponse, void>({
-      query: () => '/auth/me',
-    }),
   }),
 });
 
 export const {
   useRegisterMutation, 
   useLoginMutation, 
-  useLogoutMutation,
-  useGetCurrentUserQuery  } = authApi;
+  useLogoutMutation  } = authApi;

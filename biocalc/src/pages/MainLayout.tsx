@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Leaf, LayoutDashboard, Calculator, LogOut, Menu, ChevronRight, User, FileText, Settings } from 'lucide-react';
 import { useLogout } from '@/hooks/useLogout';
+import { useAppSelector, useAppDispatch } from '@/store/hooks';
+import { selectCurrentUser } from '@/store/slice/authSlice';
+import { useGetCurrentUserQuery } from '@/services/ApiService';
+import { setUser } from '@/store/slice/authSlice';
 
 interface SidebarItemProps {
   icon: React.ComponentType<{ size?: number }>;
@@ -30,14 +34,36 @@ export const MainLayout = () => {
   const { logout } = useLogout();
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useAppDispatch();
+  
+  // Pega o usuário do Redux
+  const user = useAppSelector(selectCurrentUser);
+  
+  // Busca dados do usuário se ainda não estiverem no Redux
+  const { data: userData } = useGetCurrentUserQuery(undefined, {
+    skip: !!user, // Pula se já tiver usuário
+  });
+
+  // Atualiza o Redux quando os dados chegarem
+  useEffect(() => {
+    if (userData && !user) {
+      dispatch(setUser(userData));
+    }
+  }, [userData, user, dispatch]);
 
   const isActive = (path: string) => location.pathname.includes(path);
 
   const getPageTitle = () => {
     if (location.pathname.includes('calculator')) return 'Cálculo de Eficiência';
     if (location.pathname.includes('projects')) return 'Meus Projetos';
-    if (location.pathname.includes('profile')) return 'Meu Perfil'; // Novo título
+    if (location.pathname.includes('profile')) return 'Meu Perfil';
     return 'Dashboard';
+  };
+
+  // Extrai o primeiro nome do usuário
+  const getFirstName = () => {
+    if (!user?.name) return 'Usuário';
+    return user.name.split(' ')[0];
   };
 
   return (
@@ -84,16 +110,19 @@ export const MainLayout = () => {
           <SidebarItem 
             icon={Settings} 
             label="Configurações" 
-            active={isActive('/profile')} // Configurações também pode levar ao perfil
+            active={isActive('/profile')}
             onClick={() => navigate('/profile')}
             collapsed={!sidebarOpen}
           />
         </div>
 
         <div className="p-4 border-t border-slate-100">
-             <button onClick={() => navigate('/login')} className={`flex items-center gap-2 text-slate-500 hover:text-red-600 transition-colors ${!sidebarOpen && 'justify-center'}`}>
+             <button 
+               onClick={logout}
+               className={`flex items-center gap-2 text-slate-500 hover:text-red-600 transition-colors ${!sidebarOpen && 'justify-center'}`}
+             >
                 <LogOut size={18} />
-                {sidebarOpen && <span className="text-sm font-medium"  onClick={logout}>Sair</span>}
+                {sidebarOpen && <span className="text-sm font-medium">Sair</span>}
              </button>
         </div>
       </aside>
@@ -115,8 +144,12 @@ export const MainLayout = () => {
 
           <div className="flex items-center gap-4">
              <div className="text-right hidden md:block">
-                <div className="text-sm font-medium text-slate-900">Eng. Ricardo</div>
-                <div className="text-xs text-slate-500">BioEnergia S.A.</div>
+                <div className="text-sm font-medium text-slate-900">
+                  {user ? getFirstName() : 'Carregando...'}
+                </div>
+                <div className="text-xs text-slate-500">
+                  {user?.company_name || 'Empresa'}
+                </div>
              </div>
              
              {/* Avatar Clicável */}

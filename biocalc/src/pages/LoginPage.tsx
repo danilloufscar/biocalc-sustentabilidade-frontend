@@ -2,18 +2,42 @@ import { Leaf } from 'lucide-react';
 import { Input, Button, Card } from '@/components/GenericComponents';
 import { useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '@/services/authApi';
-import { useState, FormEvent } from 'react';
+import { useGetCurrentUserQuery } from '@/services/ApiService';
+import { useState, FormEvent, useEffect } from 'react';
+import { useAppDispatch } from '@/store/hooks';
+import { setCredentials } from '@/store/slice/authSlice';
 import toast from 'react-hot-toast';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [login, { isLoading }] = useLoginMutation();
+  const [skipUserQuery, setSkipUserQuery] = useState(true);
+  
+  // Query para buscar dados do usuário após login
+  const { data: userData } = useGetCurrentUserQuery(undefined, {
+    skip: skipUserQuery,
+  });
   
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     rememberMe: false
   });
+
+  // Quando os dados do usuário chegarem, salva no Redux
+  useEffect(() => {
+    if (userData) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        dispatch(setCredentials({ user: userData, token }));
+        toast.success('Login realizado com sucesso!');
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 500);
+      }
+    }
+  }, [userData, dispatch, navigate]);
 
   const handleChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = field === 'rememberMe' ? e.target.checked : e.target.value;
@@ -23,7 +47,6 @@ export const LoginPage = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
-    // Validações básicas
     if (!formData.email || !formData.password) {
       toast.error('Preencha todos os campos');
       return;
@@ -37,18 +60,13 @@ export const LoginPage = () => {
       
       // Salvar token no localStorage
       localStorage.setItem('token', result.access_token);
-      // Toast de sucesso
-      toast.success('Login realizado com sucesso!');
       
-      // Redirecionar para dashboard
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 500);
+      // Ativar query para buscar dados do usuário
+      setSkipUserQuery(false);
       
     } catch (err: any) {
       console.error('Erro ao fazer login:', err);
       
-      // Mensagens de erro específicas
       if (err?.status === 401) {
         toast.error('E-mail ou senha incorretos');
       } else if (err?.status === 404) {
